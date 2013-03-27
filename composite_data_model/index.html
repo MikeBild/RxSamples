@@ -17,6 +17,7 @@
 			},
 			comment: function(state, event){
 				if(state.comments == undefined) state.comments = [];
+				if(state.commentCounts == undefined) state.commentCounts = 0;
 				state.comments.push({ body: event.body });
 				state.commentCounts += 1;
 				return state;
@@ -24,6 +25,7 @@
 		}
 
 		var stream1 = Rx.Observable.getJSON("posts.json") // url to JSON
+							.catchException(Rx.Observable.returnValue([])) // default [] data onError
 							.select(function(data){ return Rx.Observable.fromArray(data); })
 							.selectMany(function(_){ return _; })
 							.select(function(value){
@@ -31,6 +33,7 @@
 							});
 
 		var stream2 = Rx.Observable.getJSON("comments.json") // url to JSON
+							.catchException(Rx.Observable.returnValue([])) // default [] data onError
 							.select(function(data){ return Rx.Observable.fromArray(data); })
 							.selectMany(function(_){ return _; })
 							.select(function(value){
