@@ -1,0 +1,17 @@
+[
+{
+	"commentId":1,
+	"postId":1,
+	"body": "first comment"
+},
+{
+	"commentId":2,
+	"postId":1,
+	"body": "second comment"
+},
+{	
+	"commentId":3,
+	"postId":2,
+	"body": "first comment"
+}
+]
