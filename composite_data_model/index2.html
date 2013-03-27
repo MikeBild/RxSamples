@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://raw.github.com/Reactive-Extensions/RxJS/master/rx.min.js"></script>
+	<script src="https://raw.github.com/Reactive-Extensions/rxjs-html/master/lib/rx.html.js"></script>
+</head>
+<body>
+	<script>
+		function getJSON(url, type){
+			return Rx.Observable.getJSON(url)
+							.catchException(Rx.Observable.empty())
+							.selectMany(function(data){ return Rx.Observable.fromArray(data); })
+							.select(function(value){
+								return {type:type, data: value};
+							});
+		}
+
+		Rx.Observable.prototype.foldl = function (patternMatch, callback){
+			this
+				.groupBy(function (value) { return value.data[patternMatch.key]; })
+				.selectMany(function(group){
+					var state = {};
+					return group
+							.select(function(event){ return patternMatch[event.type](state, event.data);})
+							.takeLast(1);
+				})
+				.doAction(function(value){
+					callback(value);
+				})
+				.subscribe();
+		}
+
+		getJSON("posts.json", "post").merge(getJSON("comments.json", "comment"))
+			.foldl({
+				key: "postId",
+				post: function(state, event){
+					state.postId = event.postId;
+					state.title = event.title;
+					state.body = event.body;
+					state.commentCounts = 0;
+					return state;
+				},
+				comment: function(state, event){
+					if(state.comments == undefined) state.comments = [];
+					if(state.commentCounts == undefined) state.commentCounts = 0;
+					state.comments.push({ body: event.body });
+					state.commentCounts += 1;
+					return state;
+				}
+			}, function(value){
+				console.log(value);
+			});
+
+			
+	</script>
+</body>
+</html>
