@@ -48,23 +48,39 @@
 			};
 		}
 
-		var settings = {
+		var commentSettings = {
+							key: "postId",
+							initState: function(){
+								return {};
+							},
+							post: function(state, event){
+								state.postId = event.postId;
+								state.title = event.title;
+								state.body = event.body;
+								state.authorId = event.authorId;
+								state.comments = event.comments || [];
+								return state;
+							},
+							comment: function(state, event){
+								state.comments.push({ body: event.body });
+								state.commentsCounts = state.comments.length;
+								return state;
+							}
+						}
+
+		var authorSettings = {
 							key: "postId",
 							initState: function(){
 								return {
-									author: "Anonymous",
-									comments: []
+									author: "Anonymous"
 								};
 							},
 							post: function(state, event){
 								state.postId = event.postId;
 								state.title = event.title;
 								state.body = event.body;
-								return state;
-							},
-							comment: function(state, event){
-								state.comments.push({ body: event.body });
-								state.commentsCounts = state.comments.length;
+								state.comments = event.comments;
+								state.commentsCounts = event.commentsCounts;
 								return state;
 							},
 							author: function(state, event){
@@ -76,8 +92,9 @@
 		var projection = new Projection()
 				.fromUrl("posts.json", "post")
 				.andUrl("comments.json", "comment")
-				.andUrl("authors.json", "author")
-				.combine(settings, "post")
+				.combine(commentSettings, "post")
+				.nextUrl("authors.json", "author")
+				.combine(authorSettings, "post")
 				.run(function(data){
 					console.log(data);
 				});

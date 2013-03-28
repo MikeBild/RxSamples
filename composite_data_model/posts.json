@@ -2,16 +2,19 @@
 {
 	"postId":1,
 	"title": "first title",
-	"body": "first body"
+	"body": "first body",
+	"authorId":1
 },
 {
 	"postId":2,
 	"title": "second title",
-	"body": "second body"
+	"body": "second body",
+	"authorId":1
 },
 {	
 	"postId":3,
 	"title": "third title",
-	"body": "third body"
+	"body": "third body",
+	"authorId":3
 }
 ]
