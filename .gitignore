@@ -1,2 +1,14 @@
 .DS_Store
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+packages/
+_ReSharper.*/
+source/output/*
+*.suo
+*.sln.cache
+*.orig
+*.user
 
